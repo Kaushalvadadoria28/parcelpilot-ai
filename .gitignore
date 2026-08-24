@@ -1,0 +1,44 @@
+# --- Environments / secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Raw assessment data pack (never committed — see docs/git-development-plan.md §2) ---
+/data/documents/*.pdf
+/data/ParcelPilot_Assessment_Data.xlsx
+/config/contract_overrides.yaml
+
+# --- Internal audit docs kept local-only (see docs/git-development-plan.md §2) ---
+/docs/_internal/
+
+# --- Generated/build artifacts (rebuilt by ingestion scripts, not source) ---
+/var/
+*.db
+*.sqlite3
+
+# --- Local evaluation output (may contain real-data specifics) ---
+/eval/output/
+/eval/local_cases/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+build/
+dist/
+
+# --- Node / frontend (added when the frontend milestone begins) ---
+node_modules/
+.next/
+frontend/.env.local
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
