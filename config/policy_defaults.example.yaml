@@ -1,0 +1,39 @@
+# Example policy-defaults configuration, loaded by
+# backend/rules/policy_defaults.py whenever the real file below isn't
+# present locally (e.g. in this public repository and its CI).
+#
+# Every number here is fictitious and deliberately different in shape from
+# any real policy number (different window, different fee, different
+# thresholds) so this file cannot be mistaken for a transcription of the
+# real assessment pack. The real file (config/policy_defaults.yaml) is
+# derived from the current Support Policy and Cancellation & Service
+# Credit SOP in the locally-supplied data pack and is never committed —
+# see docs/git-development-plan.md §2.
+#
+# The pure rule functions in backend/rules/{cancellation,service_credit,
+# sla}.py never read this (or any) file directly — they take an
+# already-resolved PolicyDefaults object (see backend/models.py).
+
+sla_targets:
+  Enterprise:
+    P1: {amount: 45, unit: minutes, is_business_time: false}
+    P2: {amount: 3, unit: hours, is_business_time: false}
+    P3: {amount: 2, unit: days, is_business_time: true}
+  Growth:
+    P1: {amount: 3, unit: hours, is_business_time: true}
+    P2: {amount: 6, unit: hours, is_business_time: true}
+    P3: {amount: 3, unit: days, is_business_time: true}
+  Standard:
+    P1: {amount: 6, unit: hours, is_business_time: true}
+    P2: {amount: 2, unit: days, is_business_time: true}
+    P3: {amount: 3, unit: days, is_business_time: true}
+
+cancellation:
+  free_window_minutes: 20
+  fee_after_window_inr: 199
+
+service_credit:
+  default_delay_threshold_hours: 3
+  default_credit_cap_inr: 400
+  default_credit_percent: 8
+  manager_approval_threshold_inr: 900

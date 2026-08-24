@@ -1,14 +1,14 @@
-# Example contract-override manifest, documenting the schema the rule
-# engine (backend/rules/contract_overrides.py, added in Milestone 1) will
-# consume. Nothing in this repository reads this file yet — it exists now,
-# alongside the rest of the ingestion-era config manifests, purely to
-# establish the shape.
+# Example contract-override manifest, loaded by
+# backend/rules/contract_overrides.py whenever the real file below isn't
+# present locally (e.g. in this public repository and its CI).
 #
 # The real, filled-in file (config/contract_overrides.yaml) is derived from
 # the actual signed customer agreements in the locally-supplied data pack
 # and is never committed — see docs/git-development-plan.md §2. This
 # example uses a fictitious account and made-up numbers to document the
-# shape without reproducing any real contract term.
+# shape without reproducing any real contract term. The pure rule functions
+# in backend/rules/{cancellation,service_credit,sla}.py never read this (or
+# any) file directly — they take an already-resolved override object.
 
 overrides:
   - account_id: DEMO-ACCT-001
@@ -23,8 +23,8 @@ overrides:
   - account_id: DEMO-ACCT-002
     topic: service_credit
     rule:
-      delay_threshold_hours: 4
-      credit_amount_inr: 300
+      delay_threshold_hours: 6
+      credit_amount_inr: 275
       credit_amount_mode: fixed
       note: >-
         Example only. Replaces the SOP's default delay threshold and
@@ -33,9 +33,13 @@ overrides:
   - account_id: DEMO-ACCT-001
     topic: sla
     rule:
-      p1_target: "15 minutes, 24x7"
-      p2_target: "1 hour"
-      p3_target: "8 business hours"
+      # Structured (amount/unit/is_business_time), matching the same shape
+      # backend/rules/policy_defaults.py resolves plan defaults into — see
+      # backend/models.py::SlaTarget. A severity omitted here falls back to
+      # the plan default for that severity.
+      P1: {amount: 12, unit: minutes, is_business_time: false}
+      P2: {amount: 90, unit: minutes, is_business_time: false}
+      P3: {amount: 5, unit: hours, is_business_time: true}
       note: >-
         Example only. Replaces the plan-based default SLA targets for
         this account.

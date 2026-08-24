@@ -15,6 +15,11 @@ from pathlib import Path
 import pytest
 
 from backend.ingestion.build_db import build_database
+from backend.models import AccountContractOverrides, PolicyDefaults
+from tests.fixtures.policy_fixtures import (
+    build_fixture_contract_overrides,
+    build_fixture_policy_defaults,
+)
 from tests.fixtures.synthetic_dataset import write_synthetic_workbook
 
 
@@ -35,3 +40,18 @@ def synthetic_db_connection(synthetic_db_path: Path) -> Iterator[sqlite3.Connect
         yield conn
     finally:
         conn.close()
+
+
+@pytest.fixture()
+def fixture_policy_defaults() -> PolicyDefaults:
+    """A fictitious PolicyDefaults profile, never matching the real
+    assessment pack's numbers — see tests/fixtures/policy_fixtures.py."""
+    return build_fixture_policy_defaults()
+
+
+@pytest.fixture()
+def fixture_contract_overrides() -> dict[str, AccountContractOverrides]:
+    """Fictitious per-account contract overrides mirroring the real pack's
+    *patterns* (fee waiver + tighter SLA; credit threshold/amount
+    override) with entirely different numbers and account IDs."""
+    return build_fixture_contract_overrides()

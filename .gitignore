@@ -7,6 +7,7 @@
 /data/documents/*.pdf
 /data/ParcelPilot_Assessment_Data.xlsx
 /config/contract_overrides.yaml
+/config/policy_defaults.yaml
 
 # --- Internal audit docs kept local-only (see docs/git-development-plan.md §2) ---
 /docs/_internal/
