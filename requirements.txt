@@ -12,6 +12,12 @@ PyYAML>=6.0,<7.0
 # Structured data ingestion
 openpyxl>=3.1,<4.0
 
+# IANA timezone database for zoneinfo — the stdlib zoneinfo module relies on
+# an OS-provided tz database, which Windows does not ship. Installing this
+# makes ZoneInfo("Asia/Kolkata")-style lookups work on every platform
+# (see backend/ingestion/build_db.py, dataset snapshot-time handling).
+tzdata>=2024.1
+
 # Document ingestion
 pypdf>=5.0,<6.0
 

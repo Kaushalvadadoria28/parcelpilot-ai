@@ -1,0 +1,68 @@
+# Structural metadata about each document in the ParcelPilot data pack.
+#
+# This describes *shape* only — type, version, status, effective date,
+# customer scope, authority tier — not document content, and every filename
+# here is already named in CalQuity's own public assessment brief (see
+# "Candidate Data Pack"). See docs/git-development-plan.md §2 for why this
+# distinction is what makes it safe to commit, unlike the documents
+# themselves or a verbatim transcription of their content.
+#
+# `customer_account_id: null` means the document is general and applies to
+# all accounts by default; a non-null value scopes it to exactly one
+# account's signed agreement.
+#
+# `authority_tier`: "1" = signed customer agreement (highest), "2" = current
+# general policy/SOP, "3" = current product documentation, "excluded" =
+# deprecated, never used for current requests. See docs/_internal/
+# source-authority.md (local-only) for the full derivation of this
+# hierarchy from the documents' own stated precedence rules.
+
+documents:
+  - filename: 01_Support_Policy_v3_CURRENT.pdf
+    document_type: policy
+    version: v3
+    status: current
+    effective_date: "2026-05-01"
+    customer_account_id: null
+    authority_tier: "2"
+
+  - filename: 02_Support_Policy_v2_DEPRECATED.pdf
+    document_type: policy
+    version: v2
+    status: deprecated
+    effective_date: "2025-01-01"
+    superseded_by: 01_Support_Policy_v3_CURRENT.pdf
+    customer_account_id: null
+    authority_tier: "excluded"
+
+  - filename: 03_Cancellation_and_Service_Credit_SOP_v4.pdf
+    document_type: sop
+    version: v4
+    status: current
+    effective_date: "2026-06-15"
+    customer_account_id: null
+    authority_tier: "2"
+
+  - filename: 04_Product_Operations_Guide_and_Known_Issues.pdf
+    document_type: product_guide
+    version: null
+    status: current
+    effective_date: "2026-08-14"
+    customer_account_id: null
+    authority_tier: "3"
+
+  - filename: 05_Northstar_Logistics_Enterprise_Agreement.pdf
+    document_type: contract
+    version: null
+    status: active
+    effective_date: "2026-01-01"
+    customer_account_id: ACCT-001
+    authority_tier: "1"
+
+  - filename: 06_LumenWorks_Service_Agreement.pdf
+    document_type: contract
+    version: null
+    status: active
+    effective_date: "2026-03-01"
+    customer_account_id: ACCT-002
+    authority_tier: "1"
