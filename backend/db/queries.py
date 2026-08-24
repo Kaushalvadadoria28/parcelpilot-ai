@@ -20,7 +20,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from backend.db.connection import connect
-from backend.models import Account, DatasetMeta, Order, Ticket
+from backend.models import Account, DatasetMeta, DocChunk, Order, Ticket
 
 
 @contextmanager
@@ -77,6 +77,23 @@ def _row_to_ticket(row: sqlite3.Row) -> Ticket:
         assigned_to=row["assigned_to"],
         last_customer_message_at=row["last_customer_message_at"],
         historical_resolution=row["historical_resolution"],
+    )
+
+
+def _row_to_doc_chunk(row: sqlite3.Row) -> DocChunk:
+    return DocChunk(
+        chunk_id=row["chunk_id"],
+        source_file=row["source_file"],
+        document_type=row["document_type"],
+        version=row["version"],
+        status=row["status"],
+        effective_date=row["effective_date"],
+        customer_account_id=row["customer_account_id"],
+        authority_tier=row["authority_tier"],
+        superseded_by=row["superseded_by"],
+        section=row["section"],
+        page=row["page"],
+        content=row["content"],
     )
 
 
@@ -181,3 +198,42 @@ def list_tickets(
     with _connection_or(conn) as c:
         rows = c.execute(query, params).fetchall()
     return [_row_to_ticket(row) for row in rows]
+
+
+# ---------------------------------------------------------------------------
+# doc_chunks
+# ---------------------------------------------------------------------------
+
+
+def get_doc_chunk(chunk_id: int, *, conn: sqlite3.Connection | None = None) -> DocChunk | None:
+    with _connection_or(conn) as c:
+        row = c.execute("SELECT * FROM doc_chunks WHERE chunk_id = ?", (chunk_id,)).fetchone()
+    return _row_to_doc_chunk(row) if row is not None else None
+
+
+def list_doc_chunks(
+    *,
+    customer_account_id: str | None = None,
+    status: str | None = None,
+    conn: sqlite3.Connection | None = None,
+) -> list[DocChunk]:
+    """List document chunks, optionally filtered by an exact
+    `customer_account_id` match. This is a plain filter, not an
+    authorization decision: it does not know that `None` should also mean
+    "visible to everyone" — that unioning of general-plus-one-account
+    visibility is Milestone 2's job (backend/auth/authorize.py), not this
+    trusted/unscoped layer's.
+    """
+    query = "SELECT * FROM doc_chunks WHERE 1=1"
+    params: list[str] = []
+    if customer_account_id is not None:
+        query += " AND customer_account_id = ?"
+        params.append(customer_account_id)
+    if status is not None:
+        query += " AND status = ?"
+        params.append(status)
+    query += " ORDER BY chunk_id"
+
+    with _connection_or(conn) as c:
+        rows = c.execute(query, params).fetchall()
+    return [_row_to_doc_chunk(row) for row in rows]

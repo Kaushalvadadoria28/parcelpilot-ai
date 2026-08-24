@@ -81,6 +81,28 @@ class DatasetMeta(_Frozen):
     source_workbook: str
 
 
+class DocChunk(_Frozen):
+    """Mirrors the `doc_chunks` table produced by
+    `backend/ingestion/build_doc_index.py`. `customer_account_id` is `None`
+    for a general document and a specific account id for a contract scoped
+    to one customer — the field Milestone 2's authorization layer keys on
+    to decide whether a customer principal may see a given chunk.
+    """
+
+    chunk_id: int
+    source_file: str
+    document_type: str
+    version: str | None = None
+    status: str
+    effective_date: str | None = None
+    customer_account_id: str | None = None
+    authority_tier: str
+    superseded_by: str | None = None
+    section: str
+    page: int
+    content: str
+
+
 # ---------------------------------------------------------------------------
 # Resolved policy configuration (Milestone 1, commit 2)
 #
